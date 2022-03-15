@@ -1,25 +1,25 @@
 class Tone {
-  constructor(ctx, x=20, y=20, radius=15, color = "pink") {
+  constructor(ctx, x=20, y=20, radius=16, color = "pink") {
     this.x = x;
     this.y = y;
     this.radius = radius;
     this.color = color;
-    this.dx = 2;
+    this.dx = 4;
     this.dy = -2;
-     
+    this.sound = new Audio('../sounds/c.wav');
   }
 
   move() {
     this.x += this.dx;
-    this.y += this.dy;
+    // this.y += this.dy;
     // console.log("MOVE!!");
-    
-
   }
 
-  moveTo(x, y) {
-    this.x = x
-    this.y = y
+  bounceIfWall(canvas) {
+    if(this.x === canvas.width-this.radius || this.x === this.radius) {
+      this.dx = -this.dx;
+      this.sound.play();
+    }
   }
 
   create(ctx, frameCount) {

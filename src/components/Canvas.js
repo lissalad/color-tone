@@ -1,48 +1,57 @@
-import { render } from "@testing-library/react";
-import { useRef, useEffect } from "react";
-import Tone from "../lib/Tone";
+import { useRef } from "react";
+import Sketch from "react-p5";
+import "p5/lib/addons/p5.sound"
 
-const Canvas = (props) => {
-  const canvasRef = useRef(null);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  function draw(tone, ctx, frameCount) {
-
-    tone.move();
-
-    tone.create(ctx, frameCount);
-
-    // console.log("DRAW!!");
+class Tone {
+  constructor(p5, note, x=20, y=20, radius=16, color = "pink") {
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+    this.color = color;
+    this.dx = 4;
+    this.dy = -2;
+    this.note = note
   }
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    let frameCount = 0;
-    let animationFrameId;
-    let tone = new Tone(ctx);
+  draw(p5) {
+    p5.fill(this.color);
+    p5.circle(this.x, this.y, this.radius*2);
+    this.x += this.dx;
+    this.bounceIfWall(p5);
+  }
 
+  bounceIfWall(p5) {
+    if(this.x === p5.width-this.radius || this.x === this.radius) {
+      this.dx = -this.dx;
+      this.note.play();
+    }
+  }
+}
 
-    const render = () => {
-      frameCount += 1;
-      draw(tone, ctx, frameCount);
-      // animationFrameId = window.requestAnimationFrame(render);
-    };
-    render();
+function Canvas(props) {
+  let tone;
+  let c;
 
-    return () => {
-      window.cancelAnimationFrame(animationFrameId);
-    };
-  }, [draw]);
+  function setup(p5, canvasParentRef) {
+		p5.createCanvas(300, 300).parent(canvasParentRef);
+    p5.soundFormats("wav");
+    tone = new Tone(p5, c);
+  }
+
+  function draw(p5) {
+    p5.background(200);
+    tone.draw(p5);
+  }
+
+  function preload(p5) {
+    c = p5.loadSound("/sounds/c.wav");
+
+  }
 
   return (
-    <canvas
-      className="shadow-2xl bg-white my-5"
-      ref={canvasRef}
-      width="300"
-      height="560"
-      {...props}
-    />
+    <div>
+      <Sketch setup={setup} draw={draw} preload={preload} className="shadow-2xl" />
+    </div>
   );
-};
+}
 export default Canvas;
