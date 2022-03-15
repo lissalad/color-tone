@@ -1,21 +1,39 @@
+import { render } from "@testing-library/react";
 import { useRef, useEffect } from "react";
 import Tone from "../lib/Tone";
 
 const Canvas = (props) => {
-  
   const canvasRef = useRef(null);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  function draw(tone, ctx, frameCount) {
+
+    tone.move();
+
+    tone.create(ctx, frameCount);
+
+    // console.log("DRAW!!");
+  }
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    let tone = new Tone();
+    let frameCount = 0;
+    let animationFrameId;
+    let tone = new Tone(ctx);
 
-    // clear
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // white background
 
-    tone.move(canvas);
-    tone.render(ctx);
-  }, []);
+    const render = () => {
+      frameCount += 1;
+      draw(tone, ctx, frameCount);
+      // animationFrameId = window.requestAnimationFrame(render);
+    };
+    render();
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+    };
+  }, [draw]);
 
   return (
     <canvas
