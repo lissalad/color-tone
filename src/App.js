@@ -5,14 +5,14 @@ import "./App.css";
 import { useState } from "react";
 
 function App() {
-  const [playing, setPlaying] = useState(false);
+  const [playing, setPlaying] = useState(true); // SET TO FALSE WHEN USING SOUND
   return (
     <>
       <div className="App flex flex-col items-center bg-slate-900 h-screen">
         <Header />
-        <main>
+        <main className="my-12 flex flex-col items-center">
           {playing && <Canvas />}
-          <button onClick={() => setPlaying(!playing)}>
+          <button className="my-10 absolute bottom-32" onClick={() => setPlaying(!playing)}>
             <Toggle playing={playing}/>
           </button>
         </main>
