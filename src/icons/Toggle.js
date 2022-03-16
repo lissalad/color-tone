@@ -1,5 +1,5 @@
 function Toggle({ playing }) {
-  console.log(playing);
+  // console.log(playing);
   if (playing) {
     return (
       <svg

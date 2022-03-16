@@ -63,3 +63,16 @@ const Canvas = (props) => {
   );
 };
 export default Canvas;
+
+
+
+
+  // function toggle(p5) {
+  //   console.log(playing);
+
+  //   if (playing) {
+  //     p5.noLoop();
+  //   } else {
+  //     p5.loop();
+  //   }
+  // }
