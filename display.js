@@ -1,37 +1,52 @@
-let toneC, toneD, toneE, toneF, toneG, toneA, toneB;
+let tone1, tone2, tone3, tone4, tone5, tone6, tone7;
 let c, d, e, f, g, a, b;
-const windowWidth = 900;
+let i, ii, iii, iv, v, vi;
+
+// const windowWidth = 1200;
 const windowHeight = 700;
 const ground = 340;
 
-function createScaleC() {
-  toneC = new Tone(c, 40, "gold");
-  // toneD = new Tone(d, 80, "green", 6);
-  toneE = new Tone(e, 120, "teal");
-  // toneF = new Tone(f, 160, "orange");
-  toneG = new Tone(g, 200, "olive");
-  // toneA = new Tone(a, 240, "red", 8);
-  // toneB = new Tone(b, 280, "blue");
+function setKey() { // sets only to C for now
+  tone1 = new Tone(c, 40, "gold");
+  tone2 = new Tone(d, 80, "green");
+  tone3 = new Tone(e, 120, "teal");
+  tone4 = new Tone(f, 160, "orange");
+  tone5 = new Tone(g, 200, "olive");
+  tone6 = new Tone(a, 240, "red");
+  tone7 = new Tone(b, 280, "blue");
+}
+
+function createChords() {
+  i = [tone1, tone3, tone5];
+  ii = [tone2, tone4, tone6];
+  iii = [tone3, tone5, tone7];
+  iv = [tone4, tone6, tone1];
+  v = [tone5, tone7, tone2];
+  vi = [tone6, tone1, tone3];
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  // createCanvas(windowWidth, windowHeight);
+  createCanvas(displayWidth, windowHeight);
   soundFormats("wav");
-  createScaleC();
+  setKey();
+  createChords();
+  setChordSpeed(v, 4);
+  tone4.dy = 6;
   noLoop();
-}
+ }
 
 function draw() {
-  chordC();
   background(20, 30);
   // toneC.move();
   // toneD.move();
   // toneE.move();
-  // toneF.move();
+  // tone4.move();
   // toneG.move();
   // toneA.move();
   // toneB.move();
-
+  // playChord(i);
+  playChord(iii);
   drawControls();
 }
 
@@ -40,10 +55,18 @@ function drawControls() {
   rect(0, windowHeight - ground, windowWidth, ground);
 }
 
-function chordC() {
-  toneC.move();
-  toneE.move();
-  toneG.move();
+function playChord(tones) {
+  for (let i = 0; i < tones.length; i += 1) {
+    tones[i].move();
+    // console.log("CHORD!");
+  }
+}
+
+function setChordSpeed(tones, speed) {
+  for (let i = 0; i < tones.length; i += 1) {
+    tones[i].dy = speed;
+    console.log(tones[i]);
+  }
 }
 
 function keyPressed() {
@@ -68,7 +91,7 @@ function preload() {
 }
 
 class Tone {
-  constructor(note, x = 100, color = "teal", dy = 4, y = 100, radius = 16) {
+  constructor(note, x = 100, color = "teal", dy = 4, y = 17, radius = 16) {
     this.x = x;
     this.y = y;
     this.radius = radius;
@@ -82,6 +105,10 @@ class Tone {
     fill(this.color);
     noStroke();
     circle(this.x, this.y, this.radius * 2);
+  }
+
+  goTo(y) {
+    this.y = y;
   }
 
   move() {
