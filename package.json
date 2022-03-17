@@ -1,0 +1,22 @@
+{
+  "name": "color-tone",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lissalad/color-tone.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lissalad/color-tone/issues"
+  },
+  "homepage": "https://github.com/lissalad/color-tone#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}

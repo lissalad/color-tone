@@ -8,3 +8,10 @@ const tone7 = new Tone(b, 280, "blue");
 key = [tone1, tone2, tone3, tone4, tone5, tone6, tone7];
 
 let key;
+
+
+document.getElementById("new-song").addEventListener("click", (e) => {
+  // assignY();
+  setup();
+  console.log("clicked!!!");
+});
