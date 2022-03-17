@@ -1,21 +1,40 @@
 let tone1, tone2, tone3, tone4, tone5, tone6, tone7;
 let c, d, e, f, g, a, b;
 let i, ii, iii, iv, v, vi;
+let songKey;
+let ceiling = false;
+let radius = 16;
+let eighths = [];
 
-// const windowWidth = 1200;
-const windowHeight = 700;
-const ground = 340;
+const windowWidth = 1000;
+const windowHeight = 732;
+const ground = 300;
 
-function setKey() { // sets only to C for now
-  tone1 = new Tone(c, 40, "gold");
-  tone2 = new Tone(d, 80, "green");
-  tone3 = new Tone(e, 120, "teal");
-  tone4 = new Tone(f, 160, "orange");
-  tone5 = new Tone(g, 200, "olive");
-  tone6 = new Tone(a, 240, "red");
-  tone7 = new Tone(b, 280, "blue");
+function setEighths() {
+  const stageHeight = windowHeight - ground;
+  const eighth = (stageHeight - 2 * radius) / 8;
+  console.log(eighth);
+  let coord = radius;
+  for(let i = 0; i <= 8; i += 1) {
+    eighths.push(coord);
+    coord += eighth;
+  }
+console.log(eighths);
 }
 
+function setKey() {
+  // sets only to C for now
+  tone1 = new Tone(c, "#774FA6");
+  tone2 = new Tone(d, "#2E65A3");
+  tone3 = new Tone(e, "#5599A6");
+  tone4 = new Tone(f, "#5599A6");
+  tone5 = new Tone(g, "#9CD169");
+  tone6 = new Tone(a, "#D7E060");
+  tone7 = new Tone(b, "#E08460");
+  songKey = [tone1, tone2, tone3, tone4, tone5, tone6, tone7];
+}
+
+// float up until function called to come back down!
 function createChords() {
   i = [tone1, tone3, tone5];
   ii = [tone2, tone4, tone6];
@@ -25,30 +44,24 @@ function createChords() {
   vi = [tone6, tone1, tone3];
 }
 
-function setup() {
-  // createCanvas(windowWidth, windowHeight);
-  createCanvas(displayWidth, windowHeight);
-  soundFormats("wav");
-  setKey();
-  createChords();
-  setChordSpeed(v, 4);
-  tone4.dy = 6;
-  noLoop();
- }
-
-function draw() {
-  background(20, 30);
-  // toneC.move();
-  // toneD.move();
-  // toneE.move();
-  // tone4.move();
-  // toneG.move();
-  // toneA.move();
-  // toneB.move();
-  // playChord(i);
-  playChord(iii);
-  drawControls();
+function assignX(tones) {
+  const increment = windowWidth / (tones.length + 1);
+  let position = increment;
+  for (i = 0; i < tones.length; i += 1) {
+    tones[i].x = position;
+    position += increment;
+  }
 }
+
+function assignY(tones) {
+  let position;
+  for (i = 0; i < tones.length; i += 1) {
+    position = Math.floor(Math.random() * eighths.length);
+    tones[i].y = eighths[position];
+  }
+}
+
+
 
 function drawControls() {
   fill(200);
@@ -80,6 +93,42 @@ function keyPressed() {
   }
 }
 
+function setup() {
+  // createCanvas(windowWidth, windowHeight);
+  background(20, 30);
+
+  createCanvas(windowWidth, windowHeight);
+  soundFormats("wav");
+  setKey();
+  createChords();
+  setEighths();
+
+  // setChordSpeed(v, 4);
+  assignX(songKey);
+  assignY(songKey);
+
+  noLoop();
+  frameRate(100);
+
+}
+
+function draw() {
+  background(20, 30);
+  tone1.move();
+  tone2.move();
+  tone3.move();
+  tone4.move();
+  tone5.move();
+  tone6.move();
+  tone7.move();
+  // playChord(i);
+  // playChord(iii);
+  drawControls();
+  // fill("white");
+  // noStroke();
+  // circle(500, 200, 20);
+}
+
 function preload() {
   c = loadSound("/sounds/c.wav");
   d = loadSound("/sounds/d.wav");
@@ -91,13 +140,13 @@ function preload() {
 }
 
 class Tone {
-  constructor(note, x = 100, color = "teal", dy = 4, y = 17, radius = 16) {
+  constructor(note, color = "teal", x = 100, y = 16 , radius = 16) {
     this.x = x;
     this.y = y;
     this.radius = radius;
     this.color = color;
     this.dx = 4;
-    this.dy = dy;
+    this.dy = 1;
     this.note = note;
   }
 
@@ -120,16 +169,11 @@ class Tone {
   }
 
   bounceIfWall() {
-    if (this.x === windowWidth - this.radius || this.x === this.radius) {
-      this.dx = -this.dx;
-      this.note.play(); // UNCOMMENT FOR SOUND
-    }
-    if (
-      this.y >= windowHeight - ground - this.radius ||
-      this.y <= this.radius
-    ) {
+    if (this.y >= windowHeight - ground - this.radius + 1 || this.y <= this.radius - 1) {
       this.dy = -this.dy;
       this.note.play(); // UNCOMMENT FOR SOUND
+      console.log(this.y);
     }
+
   }
 }
