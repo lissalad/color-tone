@@ -6,13 +6,14 @@ let ceiling = false;
 let radius = 50;
 let eighths = [];
 let divisions = 8;
+let volu = 5;
+let frames = 90;
 
 const windowWidth = 1000;
-const windowHeight = 650;
-const ground = 400;
+const windowHeight = 350;
 
 function setEighths() {
-  const stageHeight = windowHeight - ground;
+  const stageHeight = windowHeight;
   const eighth = (stageHeight - 2 * radius) / 8;
   console.log(eighth);
   let coord = radius;
@@ -20,7 +21,7 @@ function setEighths() {
     eighths.push(coord);
     coord += eighth;
   }
-  console.log(eighths);
+  // console.log(eighths);
 }
 
 function setKey() {
@@ -33,15 +34,6 @@ function setKey() {
   tone6 = new Tone(a, "#D7E060");
   tone7 = new Tone(b, "#E08460");
   tones = [tone1, tone2, tone3, tone4, tone5, tone6, tone7];
-}
-
-function createChords() {
-  i = [tone1, tone3, tone5];
-  ii = [tone2, tone4, tone6];
-  iii = [tone3, tone5, tone7];
-  iv = [tone4, tone6, tone1];
-  v = [tone5, tone7, tone2];
-  vi = [tone6, tone1, tone3];
 }
 
 function assignX() {
@@ -73,22 +65,9 @@ function assignY() {
   }
 }
 
-function drawControls() {
-  fill(100);
-  rect(0, windowHeight - ground, windowWidth, ground);
-}
-
-function playChord() {
-  for (let i = 0; i < tones.length; i += 1) {
-    tones[i].move();
-    // console.log("CHORD!");
-  }
-}
-
-function setChordSpeed(speed) {
-  for (let i = 0; i < tones.length; i += 1) {
-    tones[i].dy = speed;
-    console.log(tones[i]);
+function setVolume() {
+  for (i = 0; i < tones.length; i += 1) {
+    tones[i].note.volume(volu);
   }
 }
 
@@ -124,7 +103,6 @@ function setup() {
 
   soundFormats("wav");
   setKey();
-  createChords();
   setEighths();
 
   // setChordSpeed(v, 4);
@@ -132,13 +110,14 @@ function setup() {
   assignY();
 
   noLoop();
-  frameRate(90);
 }
 
 function draw() {
   background(20, 30);
   moveTones();
-  drawControls();
+  frameRate(frames);
+
+  // setVolume();
   // fill("white");
   // noStroke();
   // circle(500, 200, 20);
@@ -192,7 +171,7 @@ class Tone {
 
   bounceIfWall() {
     if (
-      this.y >= windowHeight - ground - this.radius + 1 || // hits bottom
+      this.y >= windowHeight - this.radius + 1 || // hits bottom
       this.y <= this.radius - 1 // hits top
     ) {
       this.dy = -this.dy;
@@ -202,12 +181,22 @@ class Tone {
   }
 }
 
+// ---------- VOLUME --------------------------------------------
+document.getElementById("vol").addEventListener("click", (e) => {
+  outputVolume(document.getElementById("vol").value/100, .4);
+  });
+
+// ---------- FRAMERATE --------------------------------------------
+document.getElementById("fr").addEventListener("click", (e) => {
+  frames = Math.round(document.getElementById("fr").value);
+  console.log(frames);
+  });
+  
 // ---------- NEW SONG --------------------------------------------
 document.getElementById("new-song").addEventListener("click", (e) => {
   assignY();
   clear();
   background(20);
-  drawControls();
   moveTones();
 });
 
