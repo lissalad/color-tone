@@ -33,7 +33,7 @@ header > h1 {
   padding: 14px;
   border-radius: 4px;
   background-color: rgb(15, 15, 15);
-  width: fit;
+  /* width: fit-content; */
   margin: 7px;
 }
 

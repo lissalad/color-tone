@@ -1,21 +1,21 @@
-let tone1, tone2, tone3, tone4, tone5, tone6, tone7;
-let c, d, e, f, g, a, b;
+let tone1, tone2, tone3, tone4, tone5, tone6, tone7; //shaker;
+let c, d, e, f, g, a, b; //cha;
 let i, ii, iii, iv, v, vi;
 let tones;
 let ceiling = false;
-let radius = 50;
+let radius = 30;
 let eighths = [];
 let divisions = 8;
 let volu = 5;
 let frames = 90;
+let side = 0;
 
 const windowWidth = 1000;
-const windowHeight = 350;
-
+const windowHeight = 300;
 function setEighths() {
   const stageHeight = windowHeight;
   const eighth = (stageHeight - 2 * radius) / 8;
-  console.log(eighth);
+  // console.log(eighth);
   let coord = radius;
   for (let i = 0; i <= 7; i += 1) {
     eighths.push(coord);
@@ -33,7 +33,9 @@ function setKey() {
   tone5 = new Tone(g, "#9CD169");
   tone6 = new Tone(a, "#D7E060");
   tone7 = new Tone(b, "#E08460");
+
   tones = [tone1, tone2, tone3, tone4, tone5, tone6, tone7];
+  // setPercussion();
 }
 
 function assignX() {
@@ -65,12 +67,6 @@ function assignY() {
   }
 }
 
-function setVolume() {
-  for (i = 0; i < tones.length; i += 1) {
-    tones[i].note.volume(volu);
-  }
-}
-
 function keyPressed() {
   if (keyCode === 32) {
     // console.log("SPACEBAR");
@@ -82,6 +78,36 @@ function keyPressed() {
   }
 }
 
+function mouseClicked() {
+  for (let i = 0; i < tones.length; i += 1) {
+    if (isHovering(tones[i])) {
+      toggle(tones[i]);
+    }
+  }
+}
+
+function isHovering(tone) {
+  // console.log(tone)
+  if (mouseX > tone.x - radius && mouseX < tone.x + radius) {
+    if (mouseY > tone.y - radius && mouseY < tone.y + radius) {
+      return true;
+    }
+  }
+}
+
+function toggle(tone) {
+  if (tone.muted) {
+    console.log("UNMUTING!!!");
+    tone.color = tone.originalColor;
+    tone.note.setVolume(1, 0.2);
+  } 
+  if (!tone.muted) {
+    tone.color = 30;
+    tone.note.setVolume(0, 0.2);
+  }
+  tone.muted = !tone.muted;
+}
+
 function brighten(tone) {
   let m = millis();
   tone.color -= 10;
@@ -89,21 +115,27 @@ function brighten(tone) {
   if (m < 2000) {
     if (m % 5 === 0) {
       // tone.color += 5;
-      console.log("BRIGHT");
-
+      // console.log("BRIGHT");
     }
   }
 }
 
+// function setPercussion() {
+//   shaker = new Tone(cha, "#B9705F");
+//   shaker.dy = 4;
+//   shaker.y = eighths[4];
+// }
+
 function setup() {
-  // createCanvas(windowWidth, windowHeight);
+  let display = createCanvas(windowWidth, windowHeight);
+  display.parent("myContainer");
 
   createCanvas(windowWidth, windowHeight);
   background(20);
 
   soundFormats("wav");
-  setKey();
   setEighths();
+  setKey();
 
   // setChordSpeed(v, 4);
   assignX();
@@ -117,7 +149,6 @@ function draw() {
   moveTones();
   frameRate(frames);
 
-  // setVolume();
   // fill("white");
   // noStroke();
   // circle(500, 200, 20);
@@ -131,6 +162,7 @@ function moveTones() {
   tone5.move();
   tone6.move();
   tone7.move();
+  // shaker.move();
 }
 
 function preload() {
@@ -141,17 +173,21 @@ function preload() {
   g = loadSound("/sounds/g.wav");
   a = loadSound("/sounds/a.wav");
   b = loadSound("/sounds/b.wav");
+
+  cha = loadSound("/sounds/shaker.wav");
 }
 
 class Tone {
-  constructor(note, color = "teal", x = 100, y = 16) {
+  constructor(note, color, x = 100, y = 16) {
     this.x = x;
     this.y = y;
     this.radius = radius;
     this.color = color;
+    this.originalColor = color;
     this.dx = 4;
     this.dy = 1;
     this.note = note;
+    this.muted = false;
   }
 
   draw() {
@@ -175,23 +211,30 @@ class Tone {
       this.y <= this.radius - 1 // hits top
     ) {
       this.dy = -this.dy;
+      this.note.pan(side);
       this.note.play(); // UNCOMMENT FOR SOUND
       // brighten(this);
+      // console.log(this.y);
     }
   }
 }
 
 // ---------- VOLUME --------------------------------------------
 document.getElementById("vol").addEventListener("click", (e) => {
-  outputVolume(document.getElementById("vol").value/100, .4);
-  });
+  outputVolume(document.getElementById("vol").value / 100, 0.4);
+});
+
+// ---------- PAN --------------------------------------------
+document.getElementById("pot").addEventListener("click", (e) => {
+  side = document.getElementById("pot").value / 100;
+});
 
 // ---------- FRAMERATE --------------------------------------------
 document.getElementById("fr").addEventListener("click", (e) => {
   frames = Math.round(document.getElementById("fr").value);
-  console.log(frames);
-  });
-  
+  // console.log(frames);
+});
+
 // ---------- NEW SONG --------------------------------------------
 document.getElementById("new-song").addEventListener("click", (e) => {
   assignY();
