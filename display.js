@@ -7,7 +7,7 @@ let radius = 30;
 let eighths = [];
 let divisions = 8;
 let volu = 5;
-let frames = 90;
+let frames = 60;
 let side = 0;
 
 const windowWidth = 1000;
@@ -32,10 +32,10 @@ function setKey() {
   tone4 = new Tone(f, "#60C9BC");
   tone5 = new Tone(g, "#9CD169");
   tone6 = new Tone(a, "#D7E060");
-  tone7 = new Tone(b, "#E08460");
+  tone7 = new Tone(b, "#DB6C61");
 
   tones = [tone1, tone2, tone3, tone4, tone5, tone6, tone7];
-  // setPercussion();
+  setPercussion();
 }
 
 function assignX() {
@@ -86,6 +86,14 @@ function mouseClicked() {
   }
 }
 
+function doubleClicked() {
+  for (let i = 0; i < tones.length; i += 1) {
+    if (isHovering(tones[i])) {
+      console.log(tones[i]);
+    }
+  }
+}
+
 function isHovering(tone) {
   // console.log(tone)
   if (mouseX > tone.x - radius && mouseX < tone.x + radius) {
@@ -97,7 +105,7 @@ function isHovering(tone) {
 
 function toggle(tone) {
   if (tone.muted) {
-    console.log("UNMUTING!!!");
+    // console.log("UNMUTING!!!");
     tone.color = tone.originalColor;
     tone.note.setVolume(1, 0.2);
   } 
@@ -110,21 +118,26 @@ function toggle(tone) {
 
 function brighten(tone) {
   let m = millis();
-  tone.color -= 10;
+  let timer = 1000 + m;
+  // tone.color -= 10;
 
-  if (m < 2000) {
-    if (m % 5 === 0) {
-      // tone.color += 5;
-      // console.log("BRIGHT");
-    }
+  if (timer > m) {
+      tone.color += .2;
+      // console.log(m);
   }
 }
 
-// function setPercussion() {
-//   shaker = new Tone(cha, "#B9705F");
-//   shaker.dy = 4;
-//   shaker.y = eighths[4];
-// }
+function setPercussion() {
+  shaker1 = new Tone(cha, "#D2AE87");
+  shaker2 = new Tone(cha, "#D2AE87");
+
+  shaker1.y = eighths[eighths.length/2-1];
+  shaker2.y = eighths[eighths.length-1];
+
+  
+  tones.push(shaker1);
+  tones.push(shaker2);
+}
 
 function setup() {
   let display = createCanvas(windowWidth, windowHeight);
@@ -162,7 +175,9 @@ function moveTones() {
   tone5.move();
   tone6.move();
   tone7.move();
-  // shaker.move();
+  shaker1.move();
+  shaker2.move();
+
 }
 
 function preload() {

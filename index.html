@@ -26,22 +26,22 @@
     <title>colortone</title>
   </head>
   <body class="invisible flex flex-col items-center md:visible">
-    <header class="bg-teal-700 p-4 w-full">
-      <h1 class="text-white text-2xl text-underline">colortone</h1>
+    <header class=" p-1 w-full">
+      <h1 class="text-white text-[60px] text-underline text-center font-['header']">colortone</h1>
     </header>
-    <main class="flex flex-col-reverse m-9">
-      <div id='myContainer'></div>
+    <main class="flex flex-col-reverse m-3 rounded-[10px]">
+      <div id="myContainer"></div>
 
       <!-- CONTROLS -->
       <div
-        class="bg-slate-700 rounded-b flex flex-col p-4 items-center"
+        class="bg-slate-700 rounded-b-[10px] flex flex-col p-6 items-center"
         id="controls"
       >
-        <div class="flex flex-col">
-          <div class="flex flex-row">
-            <!-- PLAY / PAUSE -->
-            <button class="ctrl w-fit py-1" id="toggle">
-              <p>Power</p>
+          <div class="flex flex-row justify-between w-full">
+            <!-- POWER -->
+            <button class="ctrl w-fit py-1 rounded-full" id="toggle">
+              <img width="30" height="30" src="./icons/power.png"/>
+
             </button>
             <!-- PAN  -->
             <div class="slider ctrl w-[700px]">
@@ -110,13 +110,12 @@
                 type="range"
                 min="20"
                 max="100"
-                value="50"
+                value="60"
                 step="1"
                 id="fr"
               />
             </div>
           </div>
-        </div>
       </div>
     </main>
   </body>
